@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Registro de Ponto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface2: #1e1e1e;
+      --border: rgba(255,255,255,0.08);
+      --border-hover: rgba(255,255,255,0.18);
+      --text: #f0f0f0;
+      --text-muted: #888;
+      --text-dim: #555;
+      --entrada: #22c55e;
+      --entrada-bg: rgba(34,197,94,0.1);
+      --saida: #f97316;
+      --saida-bg: rgba(249,115,22,0.1);
+      --accent: #e8ff47;
+      --accent-dark: #b8cc1a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      height: 100%; min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    body {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 1.5rem 1rem;
+      position: relative; overflow-x: hidden;
+    }
+
+    /* background grid */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none; z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,255,71,0.06) 0%, transparent 70%);
+      top: -100px; right: -100px;
+      pointer-events: none; z-index: 0;
+    }
+
+    .container {
+      width: 100%; max-width: 420px;
+      position: relative; z-index: 1;
+    }
+
+    /* ---------- Header ---------- */
+    .header {
+      text-align: center; margin-bottom: 2rem;
+      animation: fadeDown 0.5s ease both;
+    }
+
+    .company-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--surface); border: 0.5px solid var(--border);
+      border-radius: 100px; padding: 6px 16px;
+      font-size: 12px; font-weight: 600; color: var(--text-muted);
+      letter-spacing: 0.5px; text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    .company-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); animation: pulse 2s infinite;
+    }
+
+    .time-display {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3rem, 16vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: -3px;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .date-display {
+      font-size: 13px; color: var(--text-muted);
+      text-transform: capitalize; letter-spacing: 0.3px;
+    }
+
+    /* ---------- Card ---------- */
+    .card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      animation: fadeUp 0.5s ease both 0.1s;
+    }
+
+    .card-header {
+      padding: 1.25rem 1.5rem 0;
+    }
+
+    .step-bar {
+      display: flex; gap: 6px; margin-bottom: 1.5rem;
+    }
+    .step-seg {
+      height: 3px; flex: 1; border-radius: 10px;
+      background: var(--border);
+      transition: background 0.4s ease;
+    }
+    .step-seg.done { background: var(--accent); }
+    .step-seg.active { background: rgba(232,255,71,0.4); }
+
+    .step-label {
+      font-size: 11px; font-weight: 500; color: var(--text-dim);
+      text-transform: uppercase; letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+    .step-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px; font-weight: 700;
+      color: var(--text); line-height: 1.2;
+      margin-bottom: 4px;
+    }
+    .step-sub {
+      font-size: 13px; color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .card-body { padding: 0 1.5rem 1.5rem; }
+
+    /* ---------- Inputs ---------- */
+    .input-wrap { position: relative; margin-bottom: 1rem; }
+    .input-icon {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      font-size: 16px; pointer-events: none;
+    }
+    input[type="text"], textarea {
+      width: 100%; padding: 14px 16px 14px 44px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 15px; font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      outline: none; transition: border-color 0.2s;
+    }
+    textarea {
+      padding: 14px 16px; resize: none; min-height: 100px;
+    }
+    input:focus, textarea:focus {
+      border-color: var(--accent);
+    }
+    input::placeholder, textarea::placeholder { color: var(--text-dim); }
+
+    /* ---------- Tipo buttons ---------- */
+    .tipo-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px; margin-bottom: 1.25rem;
+    }
+    .tipo-btn {
+      padding: 1.25rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface2);
+      color: var(--text-muted);
+      font-family: 'Syne', sans-serif;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      transition: all 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .tipo-btn:active { transform: scale(0.97); }
+    .tipo-icon { font-size: 28px; line-height: 1; }
+
+    .tipo-btn.entrada-btn.selected {
+      border-color: var(--entrada);
+      background: var(--entrada-bg);
+      color: var(--entrada);
+    }
+    .tipo-btn.saida-btn.selected {
+      border-color: var(--saida);
+      background: var(--saida-bg);
+      color: var(--saida);
+    }
+    .tipo-btn:not(.selected):hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+    }
+
+    .check-badge {
+      position: absolute; top: 8px; right: 8px;
+      width: 18px; height: 18px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; opacity: 0; transition: opacity 0.2s;
+    }
+    .entrada-btn.selected .check-badge {
+      opacity: 1; background: var(--entrada); color: #000;
+    }
+    .saida-btn.selected .check-badge {
+      opacity: 1; background: var(--saida); color: #000;
+    }
+
+    /* ---------- CTA button ---------- */
+    .btn-main {
+      width: 100%; padding: 15px;
+      background: var(--accent);
+      border: none; border-radius: 12px;
+      font-family: 'Syne', sans-serif;
+      font-size: 15px; font-weight: 700;
+      color: #0a0a0a;
+      cursor: pointer; letter-spacing: 0.3px;
+      transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-main:hover { background: var(--accent-dark); transform: translateY(-1px); }
+    .btn-main:active { transform: scale(0.98) translateY(0); }
+    .btn-main:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .btn-skip {
+      display: block; width: 100%; margin-top: 10px;
+      padding: 12px;
+      background: transparent; border: 1px solid var(--border);
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif; font-size: 14px;
+      color: var(--text-muted); cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-skip:hover { border-color: var(--border-hover); color: var(--text); }
+
+    /* ---------- Obs field (no icon) ---------- */
+    .obs-wrap textarea { padding: 14px 16px; }
+
+    .optional-tag {
+      display: inline-block;
+      font-size: 11px; font-weight: 500;
+      color: var(--text-dim);
+      background: var(--surface2);
+      border: 0.5px solid var(--border);
+      border-radius: 6px; padding: 2px 8px;
+      margin-left: 8px; vertical-align: middle;
+    }
+
+    /* ---------- Loading ---------- */
+    .loading-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(10,10,10,0.9);
+      z-index: 100;
+      flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+    }
+    .loading-overlay.show { display: flex; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    .loading-text { font-size: 14px; color: var(--text-muted); }
+
+    /* ---------- Success ---------- */
+    #step-success { display: none; }
+    #step-success.show { display: block; }
+
+    .success-wrap {
+      text-align: center; padding: 2rem 1.5rem;
+    }
+    .success-ring {
+      width: 72px; height: 72px; border-radius: 50%;
+      border: 2px solid var(--entrada);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.25rem;
+      animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    .success-ring.saida-ring { border-color: var(--saida); }
+    .checkmark { font-size: 32px; animation: fadeIn 0.3s ease 0.2s both; }
+
+    .success-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px; font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .success-sub {
+      font-size: 14px; color: var(--text-muted); margin-bottom: 1.75rem;
+    }
+
+    .result-grid {
+      background: var(--surface2);
+      border: 0.5px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden; text-align: left;
+      margin-bottom: 1.5rem;
+    }
+    .result-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 16px;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .result-row:last-child { border-bottom: none; }
+    .result-key { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+    .result-val { font-size: 13px; font-weight: 600; color: var(--text); max-width: 200px; text-align: right; }
+
+    .tipo-pill {
+      padding: 3px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 700;
+      font-family: 'Syne', sans-serif;
+    }
+    .pill-entrada { background: var(--entrada-bg); color: var(--entrada); }
+    .pill-saida { background: var(--saida-bg); color: var(--saida); }
+
+    .btn-novo {
+      width: 100%; padding: 13px;
+      background: transparent; border: 1px solid var(--border-hover);
+      border-radius: 12px;
+      font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600;
+      color: var(--text); cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-novo:hover { background: var(--surface2); }
+
+    /* ---------- Error ---------- */
+    .error-msg {
+      font-size: 12px; color: #f87171;
+      margin-top: -8px; margin-bottom: 10px;
+      padding-left: 4px; display: none;
+    }
+    .error-msg.show { display: block; }
+
+    /* ---------- Animations ---------- */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes scaleIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .slide-in { animation: slideIn 0.3s ease both; }
+  </style>
+</head>
+<body>
+
+<!-- ===== CONFIG — edite aqui ===== -->
+<script>
+  const CONFIG = {
+    empresa: "Minha Empresa",
+    // Cole aqui a URL do seu Google Apps Script após publicar:
+    webhook: "https://script.google.com/macros/s/SEU_ID_AQUI/exec"
+  };
+</script>
+<!-- ================================ -->
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text">Registrando ponto…</div>
+</div>
+
+<div class="container">
+
+  <!-- Header com relógio -->
+  <div class="header">
+    <div class="company-badge">
+      <div class="company-dot"></div>
+      <span id="company-name">—</span>
+    </div>
+    <div class="time-display" id="clock">00:00</div>
+    <div class="date-display" id="dateline">—</div>
+  </div>
+
+  <!-- Card do formulário -->
+  <div class="card" id="form-card">
+
+    <!-- Step 1: Nome -->
+    <div id="step-1">
+      <div class="card-header">
+        <div class="step-bar">
+          <div class="step-seg active" id="seg1"></div>
+          <div class="step-seg" id="seg2"></div>
+          <div class="step-seg" id="seg3"></div>
+        </div>
+        <div class="step-label">Passo 1 de 3</div>
+        <div class="step-title">Qual é o seu nome?</div>
+        <div class="step-sub">Identifique-se para registrar o ponto.</div>
+      </div>
+      <div class="card-body">
+        <div class="input-wrap">
+          <span class="input-icon">👤</span>
+          <input type="text" id="input-nome" placeholder="Nome completo" autocomplete="name" autocapitalize="words">
+        </div>
+        <div class="error-msg" id="err-nome">Por favor, informe seu nome.</div>
+        <button class="btn-main" onclick="goStep2()">
+          Continuar <span>→</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2: Tipo -->
+    <div id="step-2" style="display:none">
+      <div class="card-header">
+        <div class="step-bar">
+          <div class="step-seg done" id="seg1b"></div>
+          <div class="step-seg active" id="seg2b"></div>
+          <div class="step-seg" id="seg3b"></div>
+        </div>
+        <div class="step-label">Passo 2 de 3</div>
+        <div class="step-title">Tipo de registro</div>
+        <div class="step-sub">Você está chegando ou saindo?</div>
+      </div>
+      <div class="card-body">
+        <div class="tipo-grid">
+          <button class="tipo-btn entrada-btn" id="btn-entrada" onclick="selectTipo('Entrada')">
+            <div class="check-badge">✓</div>
+            <div class="tipo-icon">🟢</div>
+            <span>Entrada</span>
+          </button>
+          <button class="tipo-btn saida-btn" id="btn-saida" onclick="selectTipo('Saída')">
+            <div class="check-badge">✓</div>
+            <div class="tipo-icon">🔴</div>
+            <span>Saída</span>
+          </button>
+        </div>
+        <div class="error-msg" id="err-tipo">Selecione o tipo de registro.</div>
+        <button class="btn-main" onclick="goStep3()">
+          Continuar <span>→</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 3: Observações -->
+    <div id="step-3" style="display:none">
+      <div class="card-header">
+        <div class="step-bar">
+          <div class="step-seg done"></div>
+          <div class="step-seg done"></div>
+          <div class="step-seg active"></div>
+        </div>
+        <div class="step-label">Passo 3 de 3</div>
+        <div class="step-title">Observações <span class="optional-tag">opcional</span></div>
+        <div class="step-sub">Alguma informação adicional?</div>
+      </div>
+      <div class="card-body obs-wrap">
+        <textarea id="input-obs" placeholder="Ex: Chegando de viagem, home office, consulta médica…"></textarea>
+        <button class="btn-main" onclick="submitPonto()">
+          ✓ Registrar Ponto
+        </button>
+        <button class="btn-skip" onclick="submitPonto()">Pular e registrar sem observação</button>
+      </div>
+    </div>
+
+    <!-- Step Success -->
+    <div id="step-success">
+      <div class="success-wrap">
+        <div class="success-ring" id="success-ring">
+          <div class="checkmark">✓</div>
+        </div>
+        <div class="success-title" id="success-title">Ponto registrado!</div>
+        <div class="success-sub" id="success-sub">Registro salvo com sucesso.</div>
+
+        <div class="result-grid">
+          <div class="result-row">
+            <span class="result-key">Nome</span>
+            <span class="result-val" id="r-nome">—</span>
+          </div>
+          <div class="result-row">
+            <span class="result-key">Tipo</span>
+            <span class="result-val" id="r-tipo">—</span>
+          </div>
+          <div class="result-row">
+            <span class="result-key">Horário</span>
+            <span class="result-val" id="r-hora">—</span>
+          </div>
+          <div class="result-row">
+            <span class="result-key">Data</span>
+            <span class="result-val" id="r-data">—</span>
+          </div>
+          <div class="result-row" id="row-obs" style="display:none">
+            <span class="result-key">Observação</span>
+            <span class="result-val" id="r-obs">—</span>
+          </div>
+        </div>
+
+        <button class="btn-novo" onclick="resetForm()">+ Novo Registro</button>
+      </div>
+    </div>
+
+  </div><!-- /card -->
+</div><!-- /container -->
+
+<script>
+  // ---- Config ----
+  document.getElementById('company-name').textContent = CONFIG.empresa;
+
+  // ---- Relógio ----
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    document.getElementById('clock').textContent = h + ':' + m;
+    const dias = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+    const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    document.getElementById('dateline').textContent =
+      dias[now.getDay()] + ', ' + now.getDate() + ' de ' + meses[now.getMonth()] + ' de ' + now.getFullYear();
+  }
+  updateClock(); setInterval(updateClock, 5000);
+
+  // ---- State ----
+  let tipoSelecionado = '';
+
+  // ---- Step 1 → 2 ----
+  function goStep2() {
+    const nome = document.getElementById('input-nome').value.trim();
+    if (!nome) {
+      document.getElementById('err-nome').classList.add('show'); return;
+    }
+    document.getElementById('err-nome').classList.remove('show');
+    show('step-1', false); show('step-2', true);
+  }
+
+  // ---- Selecionar tipo ----
+  function selectTipo(tipo) {
+    tipoSelecionado = tipo;
+    document.getElementById('btn-entrada').classList.toggle('selected', tipo === 'Entrada');
+    document.getElementById('btn-saida').classList.toggle('selected', tipo === 'Saída');
+    document.getElementById('err-tipo').classList.remove('show');
+  }
+
+  // ---- Step 2 → 3 ----
+  function goStep3() {
+    if (!tipoSelecionado) {
+      document.getElementById('err-tipo').classList.add('show'); return;
+    }
+    show('step-2', false); show('step-3', true);
+  }
+
+  // ---- Submit ----
+  async function submitPonto() {
+    const nome = document.getElementById('input-nome').value.trim();
+    const obs  = document.getElementById('input-obs').value.trim();
+    const now  = new Date();
+
+    const pad  = n => String(n).padStart(2,'0');
+    const hora = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+    const meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+    const data = now.getDate()+'/'+pad(now.getMonth()+1)+'/'+now.getFullYear();
+
+    // Preenche resultado
+    document.getElementById('r-nome').textContent = nome;
+    document.getElementById('r-tipo').innerHTML =
+      `<span class="tipo-pill ${tipoSelecionado==='Entrada'?'pill-entrada':'pill-saida'}">${tipoSelecionado}</span>`;
+    document.getElementById('r-hora').textContent = hora;
+    document.getElementById('r-data').textContent = data;
+    if (obs) {
+      document.getElementById('r-obs').textContent = obs;
+      document.getElementById('row-obs').style.display = 'flex';
+    }
+
+    // Ajusta visual de sucesso
+    const ring = document.getElementById('success-ring');
+    ring.className = 'success-ring' + (tipoSelecionado === 'Saída' ? ' saida-ring' : '');
+    document.getElementById('success-title').textContent =
+      tipoSelecionado === 'Entrada' ? 'Bom trabalho! 👋' : 'Até logo! 👋';
+    document.getElementById('success-sub').textContent =
+      tipoSelecionado + ' registrada às ' + hora;
+
+    // Loading
+    document.getElementById('loading').classList.add('show');
+
+    // Envia para Google Apps Script
+    try {
+      const params = new URLSearchParams({ nome, tipo: tipoSelecionado, obs, hora, data });
+      await fetch(CONFIG.webhook + '?' + params, { method: 'GET', mode: 'no-cors' });
+    } catch(e) { /* falha silenciosa, registro visual ainda aparece */ }
+
+    setTimeout(() => {
+      document.getElementById('loading').classList.remove('show');
+      show('step-3', false);
+      const s = document.getElementById('step-success');
+      s.style.display = 'block';
+      s.classList.add('show');
+    }, 1200);
+  }
+
+  // ---- Reset ----
+  function resetForm() {
+    tipoSelecionado = '';
+    document.getElementById('input-nome').value = '';
+    document.getElementById('input-obs').value  = '';
+    document.getElementById('btn-entrada').classList.remove('selected');
+    document.getElementById('btn-saida').classList.remove('selected');
+    document.getElementById('row-obs').style.display = 'none';
+    document.getElementById('step-success').style.display = 'none';
+    document.getElementById('step-success').classList.remove('show');
+    show('step-1', true);
+  }
+
+  function show(id, visible) {
+    const el = document.getElementById(id);
+    if (visible) { el.style.display='block'; el.classList.add('slide-in'); }
+    else { el.style.display='none'; el.classList.remove('slide-in'); }
+  }
+
+  // Enter no campo nome avança
+  document.getElementById('input-nome').addEventListener('keydown', e => {
+    if (e.key === 'Enter') goStep2();
+  });
+</script>
+</body>
+</html>
