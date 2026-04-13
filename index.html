@@ -148,17 +148,8 @@ input::placeholder,textarea::placeholder{color:var(--di)}
 </div>
 <script>
 // CONFIGURAÇÃO: COLE AQUI A SUA URL DO GOOGLE APPS SCRIPT
-const URL_GOOGLE_SCRIPT = "https://script.google.com/macros/s/AKfycbx8ighozCd72UXaoGBSi9gfIb-9T0DAQ1s-4k-zKfHaXonuSdRR7HAH2jcs5YR8Y7-oAw/exec";
-
-const DIAS=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
-const MES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-function tick(){const n=new Date();document.getElementById('clk').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');document.getElementById('dl').textContent=DIAS[n.getDay()]+', '+n.getDate()+' de '+MES[n.getMonth()]+' de '+n.getFullYear();}
-tick();setInterval(tick,5000);
-let tipo='';
-function show(id){['s1','s2','s3','s4'].forEach(s=>{document.getElementById(s).style.display=s===id?'block':'none';});}
-function ir2(){if(!document.getElementById('nome').value.trim()){document.getElementById('e1').classList.add('show');return;}document.getElementById('e1').classList.remove('show');show('s2');}
-function sel(t){tipo=t;document.getElementById('be').classList.toggle('sel',t==='Entrada');document.getElementById('bs').classList.toggle('sel',t==='Saída');document.getElementById('e2').classList.remove('show');}
-function ir3(){if(!tipo){document.getElementById('e2').classList.add('show');return;}show('s3');}
+c// ATENÇÃO: Cole a URL do seu Web App do Google Script aqui embaixo
+const URL_GOOGLE_SCRIPT = "COLE_AQUI_A_SUA_URL_DO_APP_WEB_QUE_TERMINA_COM_/EXEC";
 
 function enviar(pular){
   const nome=document.getElementById('nome').value.trim();
@@ -171,7 +162,7 @@ function enviar(pular){
   document.getElementById('ov').classList.add('show');
   document.getElementById('btnReg').disabled=true;
 
-  // REQUISIÇÃO PARA O GOOGLE
+  // Usa o fetch() para enviar os dados para o Google Script
   fetch(URL_GOOGLE_SCRIPT, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -195,7 +186,7 @@ function enviar(pular){
   .catch(err => {
     document.getElementById('ov').classList.remove('show');
     document.getElementById('btnReg').disabled=false;
-    alert('Erro de conexão: ' + err.message);
+    alert('Erro de conexão: Não foi possível alcançar o Google Script.');
   });
 }
 
