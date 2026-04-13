@@ -146,11 +146,58 @@ input::placeholder,textarea::placeholder{color:var(--di)}
 
   </div>
 </div>
+
 <script>
-// CONFIGURAÇÃO: COLE AQUI A SUA URL DO GOOGLE APPS SCRIPT
-c// ATENÇÃO: Cole a URL do seu Web App do Google Script aqui embaixo
+// ============================================================
+// ATENÇÃO: COLE A URL GERADA NO GOOGLE APPS SCRIPT ABAIXO
+// A URL deve começar com "https://script.google.com/macros/..."
+// ============================================================
 const URL_GOOGLE_SCRIPT = "https://script.google.com/macros/s/AKfycbx8ighozCd72UXaoGBSi9gfIb-9T0DAQ1s-4k-zKfHaXonuSdRR7HAH2jcs5YR8Y7-oAw/exec";
 
+const DIAS=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+const MES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+
+function tick(){
+  const n=new Date();
+  document.getElementById('clk').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+  document.getElementById('dl').textContent=DIAS[n.getDay()]+', '+n.getDate()+' de '+MES[n.getMonth()]+' de '+n.getFullYear();
+}
+tick();
+setInterval(tick,5000);
+
+let tipo='';
+
+function show(id){
+  ['s1','s2','s3','s4'].forEach(s=>{
+    document.getElementById(s).style.display=s===id?'block':'none';
+  });
+}
+
+function ir2(){
+  if(!document.getElementById('nome').value.trim()){
+    document.getElementById('e1').classList.add('show');
+    return;
+  }
+  document.getElementById('e1').classList.remove('show');
+  show('s2');
+}
+
+function sel(t){
+  tipo=t;
+  document.getElementById('be').classList.toggle('sel',t==='Entrada');
+  document.getElementById('bs').classList.toggle('sel',t==='Saída');
+  document.getElementById('e2').classList.remove('show');
+}
+
+function ir3(){
+  if(!tipo){
+    document.getElementById('e2').classList.add('show');
+    return;
+  }
+  show('s3');
+}
+
+// NOVA FUNÇÃO ENVIAR: Usa a API fetch() para conectar com o Google
 function enviar(pular){
   const nome=document.getElementById('nome').value.trim();
   const obs=pular?'':document.getElementById('obs').value.trim();
@@ -162,7 +209,6 @@ function enviar(pular){
   document.getElementById('ov').classList.add('show');
   document.getElementById('btnReg').disabled=true;
 
-  // Usa o fetch() para enviar os dados para o Google Script
   fetch(URL_GOOGLE_SCRIPT, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -171,13 +217,23 @@ function enviar(pular){
   .then(res => res.json())
   .then(r => {
     document.getElementById('ov').classList.remove('show');
-    if(!r.ok) { alert("Erro: " + r.erro); return; }
+    
+    if(!r.ok) { 
+      alert("Erro do servidor: " + r.erro); 
+      document.getElementById('btnReg').disabled=false;
+      return; 
+    }
 
     document.getElementById('rn').textContent=nome;
     document.getElementById('rti').innerHTML='<span class="pill '+(tipo==='Entrada'?'e':'s')+'">'+tipo+'</span>';
     document.getElementById('rh').textContent=hora;
     document.getElementById('rd').textContent=data;
-    if(obs){document.getElementById('rob').textContent=obs;document.getElementById('ro').style.display='flex';}
+    
+    if(obs){
+      document.getElementById('rob').textContent=obs;
+      document.getElementById('ro').style.display='flex';
+    }
+    
     document.getElementById('sr').className='sr'+(tipo==='Saída'?' saida':'');
     document.getElementById('rt').textContent=tipo==='Entrada'?'Bom trabalho! 👋':'Até logo! 👋';
     document.getElementById('rs').textContent=tipo+' registrada às '+hora;
@@ -186,12 +242,25 @@ function enviar(pular){
   .catch(err => {
     document.getElementById('ov').classList.remove('show');
     document.getElementById('btnReg').disabled=false;
-    alert('Erro de conexão: Não foi possível alcançar o Google Script.');
+    alert('Erro de conexão: Não foi possível acessar o Google Script. Verifique se a URL foi colada corretamente.');
+    console.error(err);
   });
 }
 
-function novo(){tipo='';document.getElementById('nome').value='';document.getElementById('obs').value='';document.getElementById('be').classList.remove('sel');document.getElementById('bs').classList.remove('sel');document.getElementById('ro').style.display='none';document.getElementById('btnReg').disabled=false;show('s1');}
-document.getElementById('nome').addEventListener('keydown',e=>{if(e.key==='Enter')ir2();});
+function novo(){
+  tipo='';
+  document.getElementById('nome').value='';
+  document.getElementById('obs').value='';
+  document.getElementById('be').classList.remove('sel');
+  document.getElementById('bs').classList.remove('sel');
+  document.getElementById('ro').style.display='none';
+  document.getElementById('btnReg').disabled=false;
+  show('s1');
+}
+
+document.getElementById('nome').addEventListener('keydown',e=>{
+  if(e.key==='Enter') ir2();
+});
 </script>
 </body>
 </html>
