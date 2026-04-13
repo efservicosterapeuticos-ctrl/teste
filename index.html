@@ -1,644 +1,250 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>Registro de Ponto</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0a0a0a;
-      --surface: #141414;
-      --surface2: #1e1e1e;
-      --border: rgba(255,255,255,0.08);
-      --border-hover: rgba(255,255,255,0.18);
-      --text: #f0f0f0;
-      --text-muted: #888;
-      --text-dim: #555;
-      --entrada: #22c55e;
-      --entrada-bg: rgba(34,197,94,0.1);
-      --saida: #f97316;
-      --saida-bg: rgba(249,115,22,0.1);
-      --accent: #e8ff47;
-      --accent-dark: #b8cc1a;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-    html, body {
-      height: 100%; min-height: 100vh;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-    }
-
-    body {
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 1.5rem 1rem;
-      position: relative; overflow-x: hidden;
-    }
-
-    /* background grid */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none; z-index: 0;
-    }
-
-    body::after {
-      content: '';
-      position: fixed;
-      width: 500px; height: 500px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(232,255,71,0.06) 0%, transparent 70%);
-      top: -100px; right: -100px;
-      pointer-events: none; z-index: 0;
-    }
-
-    .container {
-      width: 100%; max-width: 420px;
-      position: relative; z-index: 1;
-    }
-
-    /* ---------- Header ---------- */
-    .header {
-      text-align: center; margin-bottom: 2rem;
-      animation: fadeDown 0.5s ease both;
-    }
-
-    .company-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--surface); border: 0.5px solid var(--border);
-      border-radius: 100px; padding: 6px 16px;
-      font-size: 12px; font-weight: 600; color: var(--text-muted);
-      letter-spacing: 0.5px; text-transform: uppercase;
-      margin-bottom: 1.25rem;
-    }
-    .company-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--accent); animation: pulse 2s infinite;
-    }
-
-    .time-display {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(3rem, 16vw, 4.5rem);
-      font-weight: 800;
-      letter-spacing: -3px;
-      color: var(--text);
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-
-    .date-display {
-      font-size: 13px; color: var(--text-muted);
-      text-transform: capitalize; letter-spacing: 0.3px;
-    }
-
-    /* ---------- Card ---------- */
-    .card {
-      background: var(--surface);
-      border: 0.5px solid var(--border);
-      border-radius: 20px;
-      overflow: hidden;
-      animation: fadeUp 0.5s ease both 0.1s;
-    }
-
-    .card-header {
-      padding: 1.25rem 1.5rem 0;
-    }
-
-    .step-bar {
-      display: flex; gap: 6px; margin-bottom: 1.5rem;
-    }
-    .step-seg {
-      height: 3px; flex: 1; border-radius: 10px;
-      background: var(--border);
-      transition: background 0.4s ease;
-    }
-    .step-seg.done { background: var(--accent); }
-    .step-seg.active { background: rgba(232,255,71,0.4); }
-
-    .step-label {
-      font-size: 11px; font-weight: 500; color: var(--text-dim);
-      text-transform: uppercase; letter-spacing: 0.8px;
-      margin-bottom: 6px;
-    }
-    .step-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 20px; font-weight: 700;
-      color: var(--text); line-height: 1.2;
-      margin-bottom: 4px;
-    }
-    .step-sub {
-      font-size: 13px; color: var(--text-muted);
-      margin-bottom: 1.5rem;
-    }
-
-    .card-body { padding: 0 1.5rem 1.5rem; }
-
-    /* ---------- Inputs ---------- */
-    .input-wrap { position: relative; margin-bottom: 1rem; }
-    .input-icon {
-      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-      font-size: 16px; pointer-events: none;
-    }
-    input[type="text"], textarea {
-      width: 100%; padding: 14px 16px 14px 44px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      font-size: 15px; font-family: 'DM Sans', sans-serif;
-      color: var(--text);
-      outline: none; transition: border-color 0.2s;
-    }
-    textarea {
-      padding: 14px 16px; resize: none; min-height: 100px;
-    }
-    input:focus, textarea:focus {
-      border-color: var(--accent);
-    }
-    input::placeholder, textarea::placeholder { color: var(--text-dim); }
-
-    /* ---------- Tipo buttons ---------- */
-    .tipo-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 10px; margin-bottom: 1.25rem;
-    }
-    .tipo-btn {
-      padding: 1.25rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: var(--surface2);
-      color: var(--text-muted);
-      font-family: 'Syne', sans-serif;
-      font-size: 14px; font-weight: 600;
-      cursor: pointer;
-      display: flex; flex-direction: column; align-items: center; gap: 10px;
-      transition: all 0.2s;
-      position: relative; overflow: hidden;
-    }
-    .tipo-btn:active { transform: scale(0.97); }
-    .tipo-icon { font-size: 28px; line-height: 1; }
-
-    .tipo-btn.entrada-btn.selected {
-      border-color: var(--entrada);
-      background: var(--entrada-bg);
-      color: var(--entrada);
-    }
-    .tipo-btn.saida-btn.selected {
-      border-color: var(--saida);
-      background: var(--saida-bg);
-      color: var(--saida);
-    }
-    .tipo-btn:not(.selected):hover {
-      border-color: var(--border-hover);
-      color: var(--text);
-    }
-
-    .check-badge {
-      position: absolute; top: 8px; right: 8px;
-      width: 18px; height: 18px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 10px; opacity: 0; transition: opacity 0.2s;
-    }
-    .entrada-btn.selected .check-badge {
-      opacity: 1; background: var(--entrada); color: #000;
-    }
-    .saida-btn.selected .check-badge {
-      opacity: 1; background: var(--saida); color: #000;
-    }
-
-    /* ---------- CTA button ---------- */
-    .btn-main {
-      width: 100%; padding: 15px;
-      background: var(--accent);
-      border: none; border-radius: 12px;
-      font-family: 'Syne', sans-serif;
-      font-size: 15px; font-weight: 700;
-      color: #0a0a0a;
-      cursor: pointer; letter-spacing: 0.3px;
-      transition: all 0.2s;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-    }
-    .btn-main:hover { background: var(--accent-dark); transform: translateY(-1px); }
-    .btn-main:active { transform: scale(0.98) translateY(0); }
-    .btn-main:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-    .btn-skip {
-      display: block; width: 100%; margin-top: 10px;
-      padding: 12px;
-      background: transparent; border: 1px solid var(--border);
-      border-radius: 12px;
-      font-family: 'DM Sans', sans-serif; font-size: 14px;
-      color: var(--text-muted); cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-skip:hover { border-color: var(--border-hover); color: var(--text); }
-
-    /* ---------- Obs field (no icon) ---------- */
-    .obs-wrap textarea { padding: 14px 16px; }
-
-    .optional-tag {
-      display: inline-block;
-      font-size: 11px; font-weight: 500;
-      color: var(--text-dim);
-      background: var(--surface2);
-      border: 0.5px solid var(--border);
-      border-radius: 6px; padding: 2px 8px;
-      margin-left: 8px; vertical-align: middle;
-    }
-
-    /* ---------- Loading ---------- */
-    .loading-overlay {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(10,10,10,0.9);
-      z-index: 100;
-      flex-direction: column; align-items: center; justify-content: center; gap: 16px;
-    }
-    .loading-overlay.show { display: flex; }
-    .spinner {
-      width: 40px; height: 40px;
-      border: 2px solid var(--border);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-    }
-    .loading-text { font-size: 14px; color: var(--text-muted); }
-
-    /* ---------- Success ---------- */
-    #step-success { display: none; }
-    #step-success.show { display: block; }
-
-    .success-wrap {
-      text-align: center; padding: 2rem 1.5rem;
-    }
-    .success-ring {
-      width: 72px; height: 72px; border-radius: 50%;
-      border: 2px solid var(--entrada);
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 1.25rem;
-      animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-    }
-    .success-ring.saida-ring { border-color: var(--saida); }
-    .checkmark { font-size: 32px; animation: fadeIn 0.3s ease 0.2s both; }
-
-    .success-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 22px; font-weight: 800;
-      margin-bottom: 6px;
-    }
-    .success-sub {
-      font-size: 14px; color: var(--text-muted); margin-bottom: 1.75rem;
-    }
-
-    .result-grid {
-      background: var(--surface2);
-      border: 0.5px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden; text-align: left;
-      margin-bottom: 1.5rem;
-    }
-    .result-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 12px 16px;
-      border-bottom: 0.5px solid var(--border);
-    }
-    .result-row:last-child { border-bottom: none; }
-    .result-key { font-size: 12px; color: var(--text-muted); font-weight: 500; }
-    .result-val { font-size: 13px; font-weight: 600; color: var(--text); max-width: 200px; text-align: right; }
-
-    .tipo-pill {
-      padding: 3px 12px; border-radius: 20px;
-      font-size: 12px; font-weight: 700;
-      font-family: 'Syne', sans-serif;
-    }
-    .pill-entrada { background: var(--entrada-bg); color: var(--entrada); }
-    .pill-saida { background: var(--saida-bg); color: var(--saida); }
-
-    .btn-novo {
-      width: 100%; padding: 13px;
-      background: transparent; border: 1px solid var(--border-hover);
-      border-radius: 12px;
-      font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600;
-      color: var(--text); cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-novo:hover { background: var(--surface2); }
-
-    /* ---------- Error ---------- */
-    .error-msg {
-      font-size: 12px; color: #f87171;
-      margin-top: -8px; margin-bottom: 10px;
-      padding-left: 4px; display: none;
-    }
-    .error-msg.show { display: block; }
-
-    /* ---------- Animations ---------- */
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; } to { opacity: 1; }
-    }
-    @keyframes scaleIn {
-      from { transform: scale(0.5); opacity: 0; }
-      to   { transform: scale(1);   opacity: 1; }
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(30px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-    .slide-in { animation: slideIn 0.3s ease both; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Registro de Ponto</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0a;--sf:#141414;--sf2:#1e1e1e;--bd:rgba(255,255,255,.08);--bd2:rgba(255,255,255,.18);--tx:#f0f0f0;--mu:#888;--di:#555;--gn:#22c55e;--gnb:rgba(34,197,94,.1);--or:#f97316;--orb:rgba(249,115,22,.1);--ac:#e8ff47;--ac2:#b8cc1a}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100vh;background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 1rem;position:relative;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+.wrap{width:100%;max-width:420px;position:relative;z-index:1}
+.header{text-align:center;margin-bottom:2rem;animation:fadeDown .5s ease both}
+.badge{display:inline-flex;align-items:center;gap:8px;background:var(--sf);border:.5px solid var(--bd);border-radius:100px;padding:6px 16px;font-size:12px;font-weight:600;color:var(--mu);letter-spacing:.5px;text-transform:uppercase;margin-bottom:1.25rem}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--ac);animation:pulse 2s infinite}
+.clock{font-family:'Syne',sans-serif;font-size:clamp(3rem,16vw,4.5rem);font-weight:800;letter-spacing:-3px;line-height:1;margin-bottom:4px}
+.dateline{font-size:13px;color:var(--mu);text-transform:capitalize}
+.card{background:var(--sf);border:.5px solid var(--bd);border-radius:20px;overflow:hidden;animation:fadeUp .5s ease both .1s}
+.ch{padding:1.25rem 1.5rem 0}.cb{padding:0 1.5rem 1.5rem}
+.bar{display:flex;gap:6px;margin-bottom:1.5rem}
+.seg{height:3px;flex:1;border-radius:10px;background:var(--bd);transition:background .4s}
+.seg.done{background:var(--ac)}.seg.active{background:rgba(232,255,71,.4)}
+.sl{font-size:11px;font-weight:500;color:var(--di);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.st{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;line-height:1.2;margin-bottom:4px}
+.ss{font-size:13px;color:var(--mu);margin-bottom:1.5rem}
+.iw{position:relative;margin-bottom:1rem}
+.ii{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none}
+input[type=text],textarea{width:100%;padding:14px 16px 14px 44px;background:var(--sf2);border:1px solid var(--bd);border-radius:12px;font-size:15px;font-family:'DM Sans',sans-serif;color:var(--tx);outline:none;transition:border-color .2s}
+textarea{padding:14px 16px;resize:none;min-height:100px}
+input:focus,textarea:focus{border-color:var(--ac)}
+input::placeholder,textarea::placeholder{color:var(--di)}
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
+.tb{padding:1.25rem 1rem;border:1px solid var(--bd);border-radius:14px;background:var(--sf2);color:var(--mu);font-family:'Syne',sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:10px;transition:all .2s;position:relative}
+.tb:active{transform:scale(.97)}
+.ti{font-size:28px;line-height:1}
+.tb.e.sel{border-color:var(--gn);background:var(--gnb);color:var(--gn)}
+.tb.s.sel{border-color:var(--or);background:var(--orb);color:var(--or)}
+.chk{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;opacity:0;transition:opacity .2s}
+.tb.e.sel .chk{opacity:1;background:var(--gn);color:#000}
+.tb.s.sel .chk{opacity:1;background:var(--or);color:#000}
+.btn{width:100%;padding:15px;background:var(--ac);border:none;border-radius:12px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#0a0a0a;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{background:var(--ac2);transform:translateY(-1px)}.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-g{display:block;width:100%;margin-top:10px;padding:12px;background:transparent;border:1px solid var(--bd);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--mu);cursor:pointer;transition:all .2s}
+.btn-g:hover{border-color:var(--bd2);color:var(--tx)}
+.btn-o{width:100%;padding:13px;background:transparent;border:1px solid var(--bd2);border-radius:12px;font-family:'Syne',sans-serif;font-size:14px;font-weight:600;color:var(--tx);cursor:pointer;transition:all .2s;margin-top:1rem}
+.btn-o:hover{background:var(--sf2)}
+.opt{display:inline-block;font-size:11px;color:var(--di);background:var(--sf2);border:.5px solid var(--bd);border-radius:6px;padding:2px 8px;margin-left:8px;vertical-align:middle}
+.ov{display:none;position:fixed;inset:0;background:rgba(10,10,10,.92);z-index:100;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.ov.show{display:flex}
+.sp{width:40px;height:40px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .7s linear infinite}
+.lt{font-size:14px;color:var(--mu)}
+.sr{width:72px;height:72px;border-radius:50%;border:2px solid var(--gn);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;animation:scaleIn .4s cubic-bezier(.34,1.56,.64,1) both}
+.sr.saida{border-color:var(--or)}
+.ck{font-size:32px;animation:fadeIn .3s ease .2s both}
+.t2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:6px}
+.s2{font-size:14px;color:var(--mu);margin-bottom:1.75rem}
+.rg{background:var(--sf2);border:.5px solid var(--bd);border-radius:14px;overflow:hidden;text-align:left;margin-bottom:1.5rem}
+.rr{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:.5px solid var(--bd)}
+.rr:last-child{border-bottom:none}
+.rk{font-size:12px;color:var(--mu);font-weight:500}
+.rv{font-size:13px;font-weight:600;max-width:200px;text-align:right}
+.pill{padding:3px 12px;border-radius:20px;font-size:12px;font-weight:700;font-family:'Syne',sans-serif}
+.pill.e{background:var(--gnb);color:var(--gn)}.pill.s{background:var(--orb);color:var(--or)}
+.err{font-size:12px;color:#f87171;margin-top:-8px;margin-bottom:10px;padding-left:4px;display:none}
+.err.show{display:block}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleIn{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+</style>
 </head>
 <body>
 
-<!-- ===== CONFIG — edite aqui ===== -->
+<!-- ═══════════════════════════════════════════
+     CONFIGURAÇÃO — edite apenas estas 2 linhas
+════════════════════════════════════════════ -->
 <script>
-  const CONFIG = {
-    empresa: "grupo elis",
-    webhook: "https://script.google.com/macros/s/AKfycbx0WT3mrRYorzLRw8O7QtOJjjRdF-5V_g48DnxBxmPbXYsC4Ac_hemYYCAMtFfMQK9lLg/exec"
-  };
+const EMPRESA = "Grupo Elis";
+const WEBHOOK = "COLE_AQUI_A_URL_DO_APPS_SCRIPT";
 </script>
-<!-- ================================ -->
 
-<div class="loading-overlay" id="loading">
-  <div class="spinner"></div>
-  <div class="loading-text">Registrando ponto…</div>
-</div>
+<div class="ov" id="ov"><div class="sp"></div><div class="lt">Registrando ponto…</div></div>
 
-<div class="container">
-
-  <!-- Header com relógio -->
+<div class="wrap">
   <div class="header">
-    <div class="company-badge">
-      <div class="company-dot"></div>
-      <span id="company-name">—</span>
-    </div>
-    <div class="time-display" id="clock">00:00</div>
-    <div class="date-display" id="dateline">—</div>
+    <div class="badge"><div class="dot"></div><span id="co"></span></div>
+    <div class="clock" id="clk">00:00</div>
+    <div class="dateline" id="dl"></div>
   </div>
 
-  <!-- Card do formulário -->
-  <div class="card" id="form-card">
+  <div class="card">
 
-    <!-- Step 1: Nome -->
-    <div id="step-1">
-      <div class="card-header">
-        <div class="step-bar">
-          <div class="step-seg active" id="seg1"></div>
-          <div class="step-seg" id="seg2"></div>
-          <div class="step-seg" id="seg3"></div>
-        </div>
-        <div class="step-label">Passo 1 de 3</div>
-        <div class="step-title">Qual é o seu nome?</div>
-        <div class="step-sub">Identifique-se para registrar o ponto.</div>
+    <!-- Passo 1: Nome -->
+    <div id="s1">
+      <div class="ch">
+        <div class="bar"><div class="seg active"></div><div class="seg"></div><div class="seg"></div></div>
+        <div class="sl">Passo 1 de 3</div>
+        <div class="st">Qual é o seu nome?</div>
+        <div class="ss">Identifique-se para registrar o ponto.</div>
       </div>
-      <div class="card-body">
-        <div class="input-wrap">
-          <span class="input-icon">👤</span>
-          <input type="text" id="input-nome" placeholder="Nome completo" autocomplete="name" autocapitalize="words">
-        </div>
-        <div class="error-msg" id="err-nome">Por favor, informe seu nome.</div>
-        <button class="btn-main" onclick="goStep2()">
-          Continuar <span>→</span>
-        </button>
+      <div class="cb">
+        <div class="iw"><span class="ii">👤</span><input type="text" id="nome" placeholder="Nome completo" autocapitalize="words"></div>
+        <div class="err" id="e1">Por favor, informe seu nome.</div>
+        <button class="btn" onclick="ir2()">Continuar →</button>
       </div>
     </div>
 
-    <!-- Step 2: Tipo -->
-    <div id="step-2" style="display:none">
-      <div class="card-header">
-        <div class="step-bar">
-          <div class="step-seg done" id="seg1b"></div>
-          <div class="step-seg active" id="seg2b"></div>
-          <div class="step-seg" id="seg3b"></div>
-        </div>
-        <div class="step-label">Passo 2 de 3</div>
-        <div class="step-title">Tipo de registro</div>
-        <div class="step-sub">Você está chegando ou saindo?</div>
+    <!-- Passo 2: Tipo -->
+    <div id="s2" style="display:none">
+      <div class="ch">
+        <div class="bar"><div class="seg done"></div><div class="seg active"></div><div class="seg"></div></div>
+        <div class="sl">Passo 2 de 3</div>
+        <div class="st">Tipo de registro</div>
+        <div class="ss">Você está chegando ou saindo?</div>
       </div>
-      <div class="card-body">
-        <div class="tipo-grid">
-          <button class="tipo-btn entrada-btn" id="btn-entrada" onclick="selectTipo('Entrada')">
-            <div class="check-badge">✓</div>
-            <div class="tipo-icon">🟢</div>
-            <span>Entrada</span>
-          </button>
-          <button class="tipo-btn saida-btn" id="btn-saida" onclick="selectTipo('Saída')">
-            <div class="check-badge">✓</div>
-            <div class="tipo-icon">🔴</div>
-            <span>Saída</span>
-          </button>
+      <div class="cb">
+        <div class="tg">
+          <button class="tb e" id="be" onclick="sel('Entrada')"><div class="chk">✓</div><div class="ti">🟢</div><span>Entrada</span></button>
+          <button class="tb s" id="bs" onclick="sel('Saída')"><div class="chk">✓</div><div class="ti">🔴</div><span>Saída</span></button>
         </div>
-        <div class="error-msg" id="err-tipo">Selecione o tipo de registro.</div>
-        <button class="btn-main" onclick="goStep3()">
-          Continuar <span>→</span>
-        </button>
+        <div class="err" id="e2">Selecione o tipo de registro.</div>
+        <button class="btn" onclick="ir3()">Continuar →</button>
       </div>
     </div>
 
-    <!-- Step 3: Observações -->
-    <div id="step-3" style="display:none">
-      <div class="card-header">
-        <div class="step-bar">
-          <div class="step-seg done"></div>
-          <div class="step-seg done"></div>
-          <div class="step-seg active"></div>
-        </div>
-        <div class="step-label">Passo 3 de 3</div>
-        <div class="step-title">Observações <span class="optional-tag">opcional</span></div>
-        <div class="step-sub">Alguma informação adicional?</div>
+    <!-- Passo 3: Observações -->
+    <div id="s3" style="display:none">
+      <div class="ch">
+        <div class="bar"><div class="seg done"></div><div class="seg done"></div><div class="seg active"></div></div>
+        <div class="sl">Passo 3 de 3</div>
+        <div class="st">Observações <span class="opt">opcional</span></div>
+        <div class="ss">Alguma informação adicional?</div>
       </div>
-      <div class="card-body obs-wrap">
-        <textarea id="input-obs" placeholder="Ex: Chegando de viagem, home office, consulta médica…"></textarea>
-        <button class="btn-main" onclick="submitPonto()">
-          ✓ Registrar Ponto
-        </button>
-        <button class="btn-skip" onclick="submitPonto()">Pular e registrar sem observação</button>
+      <div class="cb">
+        <textarea id="obs" placeholder="Ex: Chegando de viagem, home office…"></textarea>
+        <button class="btn" id="btnReg" onclick="enviar(false)">✓ Registrar Ponto</button>
+        <button class="btn-g" onclick="enviar(true)">Pular e registrar</button>
       </div>
     </div>
 
-    <!-- Step Success -->
-    <div id="step-success">
-      <div class="success-wrap">
-        <div class="success-ring" id="success-ring">
-          <div class="checkmark">✓</div>
+    <!-- Sucesso -->
+    <div id="s4" style="display:none">
+      <div style="text-align:center;padding:2rem 1.5rem">
+        <div class="sr" id="sr"><div class="ck">✓</div></div>
+        <div class="t2" id="rt"></div>
+        <div class="s2" id="rs"></div>
+        <div class="rg">
+          <div class="rr"><span class="rk">Nome</span><span class="rv" id="rn"></span></div>
+          <div class="rr"><span class="rk">Tipo</span><span class="rv" id="rti"></span></div>
+          <div class="rr"><span class="rk">Horário</span><span class="rv" id="rh"></span></div>
+          <div class="rr"><span class="rk">Data</span><span class="rv" id="rd"></span></div>
+          <div class="rr" id="ro" style="display:none"><span class="rk">Observação</span><span class="rv" id="rob" style="font-weight:400;max-width:180px"></span></div>
         </div>
-        <div class="success-title" id="success-title">Ponto registrado!</div>
-        <div class="success-sub" id="success-sub">Registro salvo com sucesso.</div>
-
-        <div class="result-grid">
-          <div class="result-row">
-            <span class="result-key">Nome</span>
-            <span class="result-val" id="r-nome">—</span>
-          </div>
-          <div class="result-row">
-            <span class="result-key">Tipo</span>
-            <span class="result-val" id="r-tipo">—</span>
-          </div>
-          <div class="result-row">
-            <span class="result-key">Horário</span>
-            <span class="result-val" id="r-hora">—</span>
-          </div>
-          <div class="result-row">
-            <span class="result-key">Data</span>
-            <span class="result-val" id="r-data">—</span>
-          </div>
-          <div class="result-row" id="row-obs" style="display:none">
-            <span class="result-key">Observação</span>
-            <span class="result-val" id="r-obs">—</span>
-          </div>
-        </div>
-
-        <button class="btn-novo" onclick="resetForm()">+ Novo Registro</button>
+        <button class="btn-o" onclick="novo()">+ Novo Registro</button>
       </div>
     </div>
 
-  </div><!-- /card -->
-</div><!-- /container -->
+  </div>
+</div>
 
 <script>
-  // ---- Config ----
-  document.getElementById('company-name').textContent = CONFIG.empresa;
+document.getElementById('co').textContent = EMPRESA;
 
-  // ---- Relógio ----
-  function updateClock() {
-    const now = new Date();
-    const h = String(now.getHours()).padStart(2,'0');
-    const m = String(now.getMinutes()).padStart(2,'0');
-    document.getElementById('clock').textContent = h + ':' + m;
-    const dias = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
-    const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-    document.getElementById('dateline').textContent =
-      dias[now.getDay()] + ', ' + now.getDate() + ' de ' + meses[now.getMonth()] + ' de ' + now.getFullYear();
-  }
-  updateClock(); setInterval(updateClock, 5000);
+const DIAS=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+const MES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+function tick(){
+  const n=new Date();
+  document.getElementById('clk').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+  document.getElementById('dl').textContent=DIAS[n.getDay()]+', '+n.getDate()+' de '+MES[n.getMonth()]+' de '+n.getFullYear();
+}
+tick(); setInterval(tick,5000);
 
-  // ---- State ----
-  let tipoSelecionado = '';
+let tipo='';
 
-  // ---- Step 1 → 2 ----
-  function goStep2() {
-    const nome = document.getElementById('input-nome').value.trim();
-    if (!nome) {
-      document.getElementById('err-nome').classList.add('show'); return;
-    }
-    document.getElementById('err-nome').classList.remove('show');
-    show('step-1', false); show('step-2', true);
-  }
+function show(id){['s1','s2','s3','s4'].forEach(s=>{document.getElementById(s).style.display=s===id?'block':'none';});}
 
-  // ---- Selecionar tipo ----
-  function selectTipo(tipo) {
-    tipoSelecionado = tipo;
-    document.getElementById('btn-entrada').classList.toggle('selected', tipo === 'Entrada');
-    document.getElementById('btn-saida').classList.toggle('selected', tipo === 'Saída');
-    document.getElementById('err-tipo').classList.remove('show');
-  }
+function ir2(){
+  if(!document.getElementById('nome').value.trim()){document.getElementById('e1').classList.add('show');return;}
+  document.getElementById('e1').classList.remove('show');
+  show('s2');
+}
 
-  // ---- Step 2 → 3 ----
-  function goStep3() {
-    if (!tipoSelecionado) {
-      document.getElementById('err-tipo').classList.add('show'); return;
-    }
-    show('step-2', false); show('step-3', true);
-  }
+function sel(t){
+  tipo=t;
+  document.getElementById('be').classList.toggle('sel',t==='Entrada');
+  document.getElementById('bs').classList.toggle('sel',t==='Saída');
+  document.getElementById('e2').classList.remove('show');
+}
 
-  // ---- Submit ----
-  async function submitPonto() {
-    const nome = document.getElementById('input-nome').value.trim();
-    const obs  = document.getElementById('input-obs').value.trim();
-    const now  = new Date();
+function ir3(){
+  if(!tipo){document.getElementById('e2').classList.add('show');return;}
+  show('s3');
+}
 
-    const pad  = n => String(n).padStart(2,'0');
-    const hora = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
-    const meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
-    const data = now.getDate()+'/'+pad(now.getMonth()+1)+'/'+now.getFullYear();
+async function enviar(pular){
+  const nome = document.getElementById('nome').value.trim();
+  const obs  = pular ? '' : document.getElementById('obs').value.trim();
+  const n    = new Date();
+  const pad  = x => String(x).padStart(2,'0');
+  const hora = pad(n.getHours())+':'+pad(n.getMinutes())+':'+pad(n.getSeconds());
+  const data = pad(n.getDate())+'/'+pad(n.getMonth()+1)+'/'+n.getFullYear();
 
-    // Preenche resultado
-    document.getElementById('r-nome').textContent = nome;
-    document.getElementById('r-tipo').innerHTML =
-      `<span class="tipo-pill ${tipoSelecionado==='Entrada'?'pill-entrada':'pill-saida'}">${tipoSelecionado}</span>`;
-    document.getElementById('r-hora').textContent = hora;
-    document.getElementById('r-data').textContent = data;
-    if (obs) {
-      document.getElementById('r-obs').textContent = obs;
-      document.getElementById('row-obs').style.display = 'flex';
-    }
+  document.getElementById('ov').classList.add('show');
+  document.getElementById('btnReg').disabled = true;
 
-    // Ajusta visual de sucesso
-    const ring = document.getElementById('success-ring');
-    ring.className = 'success-ring' + (tipoSelecionado === 'Saída' ? ' saida-ring' : '');
-    document.getElementById('success-title').textContent =
-      tipoSelecionado === 'Entrada' ? 'Bom trabalho! 👋' : 'Até logo! 👋';
-    document.getElementById('success-sub').textContent =
-      tipoSelecionado + ' registrada às ' + hora;
+  const params = new URLSearchParams({nome, tipo, obs, hora, data});
 
-    // Loading
-    document.getElementById('loading').classList.add('show');
-
-    // Envia para Google Apps Script
-    // Usa fetch no-cors (dispara a requisição) + timeout generoso para o script processar
-    const params = new URLSearchParams({ nome, tipo: tipoSelecionado, obs, hora, data });
-    const url = CONFIG.webhook + "?" + params.toString();
-
-    await new Promise((resolve) => {
-      // fetch no-cors: envia os dados — o navegador bloqueia a LEITURA da resposta, mas o script RECEBE e SALVA
-      fetch(url, { method: "GET", mode: "no-cors", cache: "no-cache" })
-        .catch(() => {});
-      // Aguarda 2.5s para o Apps Script processar antes de mostrar sucesso
-      setTimeout(resolve, 2500);
+  try {
+    await fetch(WEBHOOK + '?' + params.toString(), {
+      method: 'GET',
+      mode: 'no-cors',
+      cache: 'no-cache'
     });
+  } catch(e) {}
 
-    document.getElementById("loading").classList.remove("show");
-    show("step-3", false);
-    const s = document.getElementById("step-success");
-    s.style.display = "block";
-    s.classList.add("show");
-  }
+  // Aguarda o Apps Script processar
+  await new Promise(r => setTimeout(r, 2000));
 
-  // ---- Reset ----
-  function resetForm() {
-    tipoSelecionado = '';
-    document.getElementById('input-nome').value = '';
-    document.getElementById('input-obs').value  = '';
-    document.getElementById('btn-entrada').classList.remove('selected');
-    document.getElementById('btn-saida').classList.remove('selected');
-    document.getElementById('row-obs').style.display = 'none';
-    document.getElementById('step-success').style.display = 'none';
-    document.getElementById('step-success').classList.remove('show');
-    show('step-1', true);
-  }
+  document.getElementById('ov').classList.remove('show');
+  document.getElementById('rn').textContent = nome;
+  document.getElementById('rti').innerHTML  = '<span class="pill '+(tipo==='Entrada'?'e':'s')+'">'+tipo+'</span>';
+  document.getElementById('rh').textContent = hora;
+  document.getElementById('rd').textContent = data;
+  if(obs){ document.getElementById('rob').textContent=obs; document.getElementById('ro').style.display='flex'; }
+  document.getElementById('sr').className = 'sr'+(tipo==='Saída'?' saida':'');
+  document.getElementById('rt').textContent = tipo==='Entrada' ? 'Bom trabalho! 👋' : 'Até logo! 👋';
+  document.getElementById('rs').textContent = tipo+' registrada às '+hora;
+  show('s4');
+}
 
-  function show(id, visible) {
-    const el = document.getElementById(id);
-    if (visible) { el.style.display='block'; el.classList.add('slide-in'); }
-    else { el.style.display='none'; el.classList.remove('slide-in'); }
-  }
+function novo(){
+  tipo='';
+  document.getElementById('nome').value='';
+  document.getElementById('obs').value='';
+  document.getElementById('be').classList.remove('sel');
+  document.getElementById('bs').classList.remove('sel');
+  document.getElementById('ro').style.display='none';
+  document.getElementById('btnReg').disabled=false;
+  show('s1');
+}
 
-  // Enter no campo nome avança
-  document.getElementById('input-nome').addEventListener('keydown', e => {
-    if (e.key === 'Enter') goStep2();
-  });
+document.getElementById('nome').addEventListener('keydown',e=>{if(e.key==='Enter')ir2();});
 </script>
 </body>
-</html>s
+</html>
