@@ -2,8 +2,6 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Registro de Ponto</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0a0a;--sf:#141414;--sf2:#1e1e1e;--bd:rgba(255,255,255,.08);--bd2:rgba(255,255,255,.18);--tx:#f0f0f0;--mu:#888;--di:#555;--gn:#22c55e;--gnb:rgba(34,197,94,.1);--or:#f97316;--orb:rgba(249,115,22,.1);--ac:#e8ff47;--ac2:#b8cc1a}
@@ -75,27 +73,15 @@ input::placeholder,textarea::placeholder{color:var(--di)}
 </style>
 </head>
 <body>
-
-<!-- ═══════════════════════════════════════════
-     CONFIGURAÇÃO — edite apenas estas 2 linhas
-════════════════════════════════════════════ -->
-<script>
-const EMPRESA = "Grupo Elis";
-const WEBHOOK = "https://script.google.com/macros/s/AKfycby7NLSq4z3xcsIVGssW3KoM7HJCvrgug_FX6p8pa-EtzoNRc-oyerpCPNzMOrCj9sKr5w/exec";
-</script>
-
 <div class="ov" id="ov"><div class="sp"></div><div class="lt">Registrando ponto…</div></div>
-
 <div class="wrap">
   <div class="header">
-    <div class="badge"><div class="dot"></div><span id="co"></span></div>
+    <div class="badge"><div class="dot"></div><span><?= empresa ?></span></div>
     <div class="clock" id="clk">00:00</div>
     <div class="dateline" id="dl"></div>
   </div>
-
   <div class="card">
 
-    <!-- Passo 1: Nome -->
     <div id="s1">
       <div class="ch">
         <div class="bar"><div class="seg active"></div><div class="seg"></div><div class="seg"></div></div>
@@ -110,7 +96,6 @@ const WEBHOOK = "https://script.google.com/macros/s/AKfycby7NLSq4z3xcsIVGssW3KoM
       </div>
     </div>
 
-    <!-- Passo 2: Tipo -->
     <div id="s2" style="display:none">
       <div class="ch">
         <div class="bar"><div class="seg done"></div><div class="seg active"></div><div class="seg"></div></div>
@@ -128,7 +113,6 @@ const WEBHOOK = "https://script.google.com/macros/s/AKfycby7NLSq4z3xcsIVGssW3KoM
       </div>
     </div>
 
-    <!-- Passo 3: Observações -->
     <div id="s3" style="display:none">
       <div class="ch">
         <div class="bar"><div class="seg done"></div><div class="seg done"></div><div class="seg active"></div></div>
@@ -143,7 +127,6 @@ const WEBHOOK = "https://script.google.com/macros/s/AKfycby7NLSq4z3xcsIVGssW3KoM
       </div>
     </div>
 
-    <!-- Sucesso -->
     <div id="s4" style="display:none">
       <div style="text-align:center;padding:2rem 1.5rem">
         <div class="sr" id="sr"><div class="ck">✓</div></div>
@@ -162,88 +145,46 @@ const WEBHOOK = "https://script.google.com/macros/s/AKfycby7NLSq4z3xcsIVGssW3KoM
 
   </div>
 </div>
-
 <script>
-document.getElementById('co').textContent = EMPRESA;
-
 const DIAS=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
 const MES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-function tick(){
-  const n=new Date();
-  document.getElementById('clk').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
-  document.getElementById('dl').textContent=DIAS[n.getDay()]+', '+n.getDate()+' de '+MES[n.getMonth()]+' de '+n.getFullYear();
-}
-tick(); setInterval(tick,5000);
-
+function tick(){const n=new Date();document.getElementById('clk').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');document.getElementById('dl').textContent=DIAS[n.getDay()]+', '+n.getDate()+' de '+MES[n.getMonth()]+' de '+n.getFullYear();}
+tick();setInterval(tick,5000);
 let tipo='';
-
 function show(id){['s1','s2','s3','s4'].forEach(s=>{document.getElementById(s).style.display=s===id?'block':'none';});}
-
-function ir2(){
-  if(!document.getElementById('nome').value.trim()){document.getElementById('e1').classList.add('show');return;}
-  document.getElementById('e1').classList.remove('show');
-  show('s2');
-}
-
-function sel(t){
-  tipo=t;
-  document.getElementById('be').classList.toggle('sel',t==='Entrada');
-  document.getElementById('bs').classList.toggle('sel',t==='Saída');
-  document.getElementById('e2').classList.remove('show');
-}
-
-function ir3(){
-  if(!tipo){document.getElementById('e2').classList.add('show');return;}
-  show('s3');
-}
-
-async function enviar(pular){
-  const nome = document.getElementById('nome').value.trim();
-  const obs  = pular ? '' : document.getElementById('obs').value.trim();
-  const n    = new Date();
-  const pad  = x => String(x).padStart(2,'0');
-  const hora = pad(n.getHours())+':'+pad(n.getMinutes())+':'+pad(n.getSeconds());
-  const data = pad(n.getDate())+'/'+pad(n.getMonth()+1)+'/'+n.getFullYear();
-
+function ir2(){if(!document.getElementById('nome').value.trim()){document.getElementById('e1').classList.add('show');return;}document.getElementById('e1').classList.remove('show');show('s2');}
+function sel(t){tipo=t;document.getElementById('be').classList.toggle('sel',t==='Entrada');document.getElementById('bs').classList.toggle('sel',t==='Saída');document.getElementById('e2').classList.remove('show');}
+function ir3(){if(!tipo){document.getElementById('e2').classList.add('show');return;}show('s3');}
+function enviar(pular){
+  const nome=document.getElementById('nome').value.trim();
+  const obs=pular?'':document.getElementById('obs').value.trim();
+  const n=new Date();
+  const pad=x=>String(x).padStart(2,'0');
+  const hora=pad(n.getHours())+':'+pad(n.getMinutes())+':'+pad(n.getSeconds());
+  const data=pad(n.getDate())+'/'+pad(n.getMonth()+1)+'/'+n.getFullYear();
   document.getElementById('ov').classList.add('show');
-  document.getElementById('btnReg').disabled = true;
-
-  const params = new URLSearchParams({nome, tipo, obs, hora, data});
-
-  try {
-    await fetch(WEBHOOK + '?' + params.toString(), {
-      method: 'GET',
-      mode: 'no-cors',
-      cache: 'no-cache'
-    });
-  } catch(e) {}
-
-  // Aguarda o Apps Script processar
-  await new Promise(r => setTimeout(r, 2000));
-
-  document.getElementById('ov').classList.remove('show');
-  document.getElementById('rn').textContent = nome;
-  document.getElementById('rti').innerHTML  = '<span class="pill '+(tipo==='Entrada'?'e':'s')+'">'+tipo+'</span>';
-  document.getElementById('rh').textContent = hora;
-  document.getElementById('rd').textContent = data;
-  if(obs){ document.getElementById('rob').textContent=obs; document.getElementById('ro').style.display='flex'; }
-  document.getElementById('sr').className = 'sr'+(tipo==='Saída'?' saida':'');
-  document.getElementById('rt').textContent = tipo==='Entrada' ? 'Bom trabalho! 👋' : 'Até logo! 👋';
-  document.getElementById('rs').textContent = tipo+' registrada às '+hora;
-  show('s4');
+  document.getElementById('btnReg').disabled=true;
+  google.script.run
+    .withSuccessHandler(function(r){
+      document.getElementById('ov').classList.remove('show');
+      document.getElementById('rn').textContent=nome;
+      document.getElementById('rti').innerHTML='<span class="pill '+(tipo==='Entrada'?'e':'s')+'">'+tipo+'</span>';
+      document.getElementById('rh').textContent=hora;
+      document.getElementById('rd').textContent=data;
+      if(obs){document.getElementById('rob').textContent=obs;document.getElementById('ro').style.display='flex';}
+      document.getElementById('sr').className='sr'+(tipo==='Saída'?' saida':'');
+      document.getElementById('rt').textContent=tipo==='Entrada'?'Bom trabalho! 👋':'Até logo! 👋';
+      document.getElementById('rs').textContent=tipo+' registrada às '+hora;
+      show('s4');
+    })
+    .withFailureHandler(function(err){
+      document.getElementById('ov').classList.remove('show');
+      document.getElementById('btnReg').disabled=false;
+      alert('Erro: '+err.message);
+    })
+    .registrarPonto({nome,tipo,obs,hora,data});
 }
-
-function novo(){
-  tipo='';
-  document.getElementById('nome').value='';
-  document.getElementById('obs').value='';
-  document.getElementById('be').classList.remove('sel');
-  document.getElementById('bs').classList.remove('sel');
-  document.getElementById('ro').style.display='none';
-  document.getElementById('btnReg').disabled=false;
-  show('s1');
-}
-
+function novo(){tipo='';document.getElementById('nome').value='';document.getElementById('obs').value='';document.getElementById('be').classList.remove('sel');document.getElementById('bs').classList.remove('sel');document.getElementById('ro').style.display='none';document.getElementById('btnReg').disabled=false;show('s1');}
 document.getElementById('nome').addEventListener('keydown',e=>{if(e.key==='Enter')ir2();});
 </script>
 </body>
