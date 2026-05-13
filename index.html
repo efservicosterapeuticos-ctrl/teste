@@ -145,18 +145,22 @@ textarea:focus{border-color:var(--brown)}
     </div>
 
     <!-- Passo 1 -->
-    <div id="s1">
-      <div class="ch"><div class="st">Quem é você?</div><div class="ss">Selecione seu nome na lista abaixo.</div></div>
-      <div class="cb">
-        <div class="nome-grid">
-  <button class="nome-btn" onclick="selNome('WINICIUS')"><div class="avatar">W</div><span class="nbname">WINICIUS</span></button>
-  <button class="nome-btn" onclick="selNome('MORGANA')"><div class="avatar">M</div><span class="nbname">MORGANA</span></button>
-  <button class="nome-btn" onclick="selNome('JUCIELI')"><div class="avatar">J</div><span class="nbname">JUCIELI</span></button>
-  <button class="nome-btn" onclick="selNome('HENRIQUE')"><div class="avatar">H</div><span class="nbname">HENRIQUE</span></button>
-  <button class="nome-btn" onclick="selNome('DANIELA')"><div class="avatar">D</div><span class="nbname">DANI</span></button>
-  <button class="nome-btn" onclick="selNome('FABIANE')"><div class="avatar">F</div><span class="nbname">FABIANE</span></button>
-</div>
+   <!-- Passo 1 -->
+<div id="s1">
+  <div class="ch"><div class="st">Quem é você?</div><div class="ss">Selecione seu nome na lista abaixo.</div></div>
+  <div class="cb">
+    <div class="nome-grid">
+      <button class="nome-btn" onclick="selNome('WINICIUS')"><div class="avatar">W</div><span class="nbname">WINICIUS</span></button>
+      <button class="nome-btn" onclick="selNome('MORGANA')"><div class="avatar">M</div><span class="nbname">MORGANA</span></button>
+      <button class="nome-btn" onclick="selNome('JUCIELI')"><div class="avatar">J</div><span class="nbname">JUCIELI</span></button>
+      <button class="nome-btn" onclick="selNome('HENRIQUE')"><div class="avatar">H</div><span class="nbname">HENRIQUE</span></button>
+      <button class="nome-btn" onclick="selNome('DANI')"><div class="avatar">D</div><span class="nbname">DANI</span></button>
+      <button class="nome-btn" onclick="selNome('FABIANE')"><div class="avatar">F</div><span class="nbname">FABIANE</span></button>
     </div>
+    <div class="err" id="e1">Selecione seu nome antes de continuar.</div>
+    <button class="btn" onclick="ir2()">Continuar →</button>
+  </div>
+</div>
 
     <!-- Passo 2 -->
     <div id="s2" style="display:none">
