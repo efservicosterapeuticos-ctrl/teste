@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ato de Honra - Ponto Digital</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
@@ -23,12 +22,9 @@
 --green-bg:rgba(74,124,89,.12);
 --orange:#c0622a;
 --orange-bg:rgba(192,98,42,.12);
---red:#b23b3b;
---red-bg:rgba(178,59,59,.12);
---blue:#476f95;
---blue-bg:rgba(71,111,149,.12);
 --border:rgba(122,82,48,.15);
 --border2:rgba(122,82,48,.3);
+--shadow:0 2px 16px rgba(92,61,46,.1);
 --shadow2:0 4px 32px rgba(92,61,46,.18);
 }
 
@@ -84,11 +80,15 @@ gap:15px;
 margin-bottom:1.5rem;
 }
 
-.logo-img-grande{
+.logo-img-grande {
 height:auto;
 width:180px;
 max-width:85%;
 object-fit:contain;
+}
+
+.logo-text{
+text-align:center;
 }
 
 .logo-name{
@@ -119,6 +119,10 @@ font-weight:600;
 color:var(--brown);
 letter-spacing:.4px;
 text-transform:uppercase;
+}
+
+.time-block{
+margin-bottom:.5rem;
 }
 
 .clock{
@@ -243,31 +247,28 @@ gap:8px;
 margin-bottom:1rem;
 }
 
-.nome-btn,.tb{
+.nome-btn{
+padding:12px 10px;
 border:1.5px solid var(--border2);
+border-radius:10px;
 background:#fff;
+color:var(--text-mid);
 font-family:'Inter',sans-serif;
+font-size:13px;
+font-weight:500;
 cursor:pointer;
+display:flex;
+align-items:center;
+gap:8px;
 transition:all .2s;
 position:relative;
 }
 
-.nome-btn{
-padding:12px 10px;
-border-radius:10px;
-color:var(--text-mid);
-font-size:13px;
-font-weight:500;
-display:flex;
-align-items:center;
-gap:8px;
-}
-
-.nome-btn:active,.tb:active{
+.nome-btn:active{
 transform:scale(.97);
 }
 
-.avatar{
+.nome-btn .avatar{
 width:28px;
 height:28px;
 border-radius:50%;
@@ -282,7 +283,7 @@ color:var(--brown);
 flex-shrink:0;
 }
 
-.nbname{
+.nome-btn .nbname{
 font-size:12px;
 font-weight:600;
 color:var(--text);
@@ -304,13 +305,14 @@ color:#fff;
 grid-column:1/-1;
 }
 
-.chk-nome,.chk{
+.chk-nome{
 position:absolute;
 top:6px;
 right:8px;
 width:16px;
 height:16px;
 border-radius:50%;
+background:var(--brown);
 display:flex;
 align-items:center;
 justify-content:center;
@@ -319,11 +321,7 @@ color:#fff;
 opacity:0;
 }
 
-.chk-nome{
-background:var(--brown);
-}
-
-.nome-btn.sel .chk-nome,.tb.sel .chk{
+.nome-btn.sel .chk-nome{
 opacity:1;
 }
 
@@ -335,46 +333,60 @@ margin-bottom:1rem;
 }
 
 .tb{
-padding:1.1rem .75rem;
+padding:1.1rem 1rem;
+border:1.5px solid var(--border2);
 border-radius:12px;
+background:#fff;
 color:var(--text-muted);
+font-family:'Inter',sans-serif;
 font-size:13px;
 font-weight:600;
+cursor:pointer;
 display:flex;
 flex-direction:column;
 align-items:center;
 gap:8px;
-min-height:86px;
+transition:all .2s;
+position:relative;
 }
 
-.tb.entrada.sel{
+.tb.e.sel{
 border-color:var(--green);
 background:var(--green-bg);
 color:var(--green);
 }
 
-.tb.almoco.sel{
+.tb.s.sel{
 border-color:var(--orange);
 background:var(--orange-bg);
 color:var(--orange);
 }
 
-.tb.retorno.sel{
-border-color:var(--blue);
-background:var(--blue-bg);
-color:var(--blue);
+.chk{
+position:absolute;
+top:7px;
+right:8px;
+width:16px;
+height:16px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:9px;
+opacity:0;
 }
 
-.tb.saida.sel{
-border-color:var(--red);
-background:var(--red-bg);
-color:var(--red);
+.tb.e.sel .chk{
+opacity:1;
+background:var(--green);
+color:#fff;
 }
 
-.tb.entrada.sel .chk{background:var(--green)}
-.tb.almoco.sel .chk{background:var(--orange)}
-.tb.retorno.sel .chk{background:var(--blue)}
-.tb.saida.sel .chk{background:var(--red)}
+.tb.s.sel .chk{
+opacity:1;
+background:var(--orange);
+color:#fff;
+}
 
 textarea{
 width:100%;
@@ -420,27 +432,29 @@ opacity:.5;
 cursor:not-allowed;
 }
 
-.btn-g,.btn-o{
-width:100%;
-border:1.5px solid var(--border2);
-border-radius:10px;
-font-size:13px;
-cursor:pointer;
-}
-
 .btn-g{
 display:block;
+width:100%;
 margin-top:8px;
 padding:11px;
 background:transparent;
+border:1.5px solid var(--border2);
+border-radius:10px;
+font-size:13px;
 color:var(--text-muted);
+cursor:pointer;
 }
 
 .btn-o{
+width:100%;
 padding:12px;
 background:transparent;
+border:1.5px solid var(--border2);
+border-radius:10px;
+font-size:13px;
 font-weight:600;
 color:var(--brown);
+cursor:pointer;
 margin-top:1rem;
 }
 
@@ -478,6 +492,10 @@ display:flex;
 align-items:center;
 justify-content:center;
 margin:0 auto 1.25rem;
+}
+
+.sr.saida{
+border-color:var(--orange);
 }
 
 .t2{
@@ -522,13 +540,21 @@ padding:3px 11px;
 border-radius:20px;
 font-size:11px;
 font-weight:700;
-background:var(--cream3);
-color:var(--brown);
+}
+
+.pill.e{
+background:var(--green-bg);
+color:var(--green);
+}
+
+.pill.s{
+background:var(--orange-bg);
+color:var(--orange);
 }
 
 .err{
 font-size:11px;
-color:var(--orange);
+color:#c0622a;
 margin-top:-6px;
 margin-bottom:10px;
 display:none;
@@ -572,29 +598,35 @@ to{transform:rotate(360deg)}
 </head>
 
 <body>
+
 <div class="ov" id="ov">
 <div class="sp"></div>
-<div class="lt">Registrando ponto...</div>
+<div class="lt">Registrando ponto…</div>
 </div>
 
 <div class="wrap">
+
 <div class="header">
 <div class="logo-area">
+
 <img src="logo_nova.png" alt="Logo Ato de Honra" class="logo-img-grande">
-<div>
+
+<div class="logo-text">
 <div class="logo-name">ATO DE HONRA</div>
 <div class="logo-sub">Registro de Ponto</div>
 <div class="base-atual" id="baseAtualTexto">Base: carregando...</div>
 </div>
+
 </div>
 
-<div>
+<div class="time-block">
 <div class="clock" id="clk">00:00</div>
 <div class="dateline" id="dl"></div>
 </div>
 </div>
 
 <div class="card">
+
 <div class="card-top">
 <div>
 <div class="card-top-title">Registro de Ponto</div>
@@ -606,8 +638,8 @@ to{transform:rotate(360deg)}
 <div class="prog-wrap">
 <div class="prog-labels">
 <span class="prog-label active" id="pl1">Colaborador</span>
-<span class="prog-label" id="pl2">Batida</span>
-<span class="prog-label" id="pl3">Observacao</span>
+<span class="prog-label" id="pl2">Tipo</span>
+<span class="prog-label" id="pl3">Observação</span>
 </div>
 <div class="prog-bar">
 <div class="prog-seg active" id="ps1"></div>
@@ -618,68 +650,101 @@ to{transform:rotate(360deg)}
 
 <div id="s1">
 <div class="ch">
-<div class="st">Quem e voce?</div>
+<div class="st">Quem é você?</div>
 <div class="ss">Selecione seu nome para registrar o ponto.</div>
 </div>
 
 <div class="cb">
-<div class="nome-grid" id="nomes"></div>
+<div class="nome-grid">
+
+<button class="nome-btn" onclick="selNome('WINICIUS', this)">
+<div class="avatar">W</div>
+<span class="nbname">WINICIUS</span>
+<div class="chk-nome">✓</div>
+</button>
+
+<button class="nome-btn" onclick="selNome('MORGANA', this)">
+<div class="avatar">M</div>
+<span class="nbname">MORGANA</span>
+<div class="chk-nome">✓</div>
+</button>
+
+<button class="nome-btn" onclick="selNome('JUCIELI', this)">
+<div class="avatar">J</div>
+<span class="nbname">JUCIELI</span>
+<div class="chk-nome">✓</div>
+</button>
+
+<button class="nome-btn" onclick="selNome('HENRIQUE', this)">
+<div class="avatar">H</div>
+<span class="nbname">HENRIQUE</span>
+<div class="chk-nome">✓</div>
+</button>
+
+<button class="nome-btn nome-btn-full" onclick="selNome('FABIANE', this)">
+<div class="avatar">F</div>
+<span class="nbname">FABIANE</span>
+<div class="chk-nome">✓</div>
+</button>
+
+<button class="nome-btn nome-btn-full" onclick="selNome('DANIELA', this)">
+<div class="avatar">D</div>
+<span class="nbname">DANIELA</span>
+<div class="chk-nome">✓</div>
+</button>
+
+</div>
+
 <div class="err" id="e1">Por favor, selecione seu nome.</div>
-<button class="btn" onclick="ir2()">Continuar -></button>
+<button class="btn" onclick="ir2()">Continuar →</button>
 </div>
 </div>
 
 <div id="s2" style="display:none">
 <div class="ch">
-<div class="st">Qual batida?</div>
-<div class="ss">Escolha uma das quatro batidas do dia.</div>
+<div class="st">Tipo de registro</div>
+<div class="ss">Você está chegando ou saindo?</div>
 </div>
 
 <div class="cb">
 <div class="tg">
-<button class="tb entrada" id="tipo-entrada" onclick="selTipo('Entrada')">
+
+<button class="tb e" id="be" onclick="sel('Entrada')">
 <div class="chk">✓</div>
-<div>🟢</div>
+<div class="ti">🟢</div>
 <span>Entrada</span>
 </button>
-<button class="tb almoco" id="tipo-ida-almoco" onclick="selTipo('Ida almoço')">
+
+<button class="tb s" id="bs" onclick="sel('Saída')">
 <div class="chk">✓</div>
-<div>🍽️</div>
-<span>Ida almoço</span>
-</button>
-<button class="tb retorno" id="tipo-volta-almoco" onclick="selTipo('Volta almoço')">
-<div class="chk">✓</div>
-<div>🔵</div>
-<span>Volta almoço</span>
-</button>
-<button class="tb saida" id="tipo-saida" onclick="selTipo('Saída')">
-<div class="chk">✓</div>
-<div>🔴</div>
+<div class="ti">🔴</div>
 <span>Saída</span>
 </button>
+
 </div>
 
-<div class="err" id="e2">Selecione o tipo de batida.</div>
-<button class="btn" onclick="ir3()">Continuar -></button>
+<div class="err" id="e2">Selecione o tipo de registro.</div>
+<button class="btn" onclick="ir3()">Continuar →</button>
 </div>
 </div>
 
 <div id="s3" style="display:none">
 <div class="ch">
-<div class="st">Observacoes <span class="opt">opcional</span></div>
-<div class="ss">Alguma informacao adicional?</div>
+<div class="st">Observações <span class="opt">opcional</span></div>
+<div class="ss">Alguma informação adicional?</div>
 </div>
 
 <div class="cb">
-<textarea id="obs" placeholder="Ex: Chegando de viagem, home office..."></textarea>
-<button class="btn" id="btnReg" onclick="enviar(false)">Registrar ponto</button>
-<button class="btn-g" onclick="enviar(true)">Pular e registrar sem observacao</button>
+<textarea id="obs" placeholder="Ex: Chegando de viagem, home office…"></textarea>
+<button class="btn" id="btnReg" onclick="enviar(false)">✓ Registrar Ponto</button>
+<button class="btn-g" onclick="enviar(true)">Pular e registrar sem observação</button>
 </div>
 </div>
 
 <div id="s4" style="display:none">
 <div style="text-align:center;padding:2rem 1.5rem">
-<div class="sr">
+
+<div class="sr" id="sr">
 <div style="font-size:28px">✓</div>
 </div>
 
@@ -690,29 +755,34 @@ to{transform:rotate(360deg)}
 <span class="rk">Base</span>
 <span class="rv" id="rbase"></span>
 </div>
+
 <div class="rr">
 <span class="rk">Colaborador</span>
 <span class="rv" id="rn"></span>
 </div>
+
 <div class="rr">
-<span class="rk">Batida</span>
+<span class="rk">Tipo</span>
 <span class="rv" id="rti"></span>
 </div>
+
 <div class="rr">
-<span class="rk">Horario</span>
+<span class="rk">Horário</span>
 <span class="rv" id="rh"></span>
 </div>
+
 <div class="rr">
 <span class="rk">Data</span>
 <span class="rv" id="rd"></span>
 </div>
+
 <div class="rr" id="ro" style="display:none">
-<span class="rk">Observacao</span>
+<span class="rk">Observação</span>
 <span class="rv" id="rob" style="font-weight:400;max-width:180px"></span>
 </div>
 </div>
 
-<button class="btn-o" onclick="novo()">+ Novo registro</button>
+<button class="btn-o" onclick="novo()">+ Novo Registro</button>
 </div>
 </div>
 
@@ -720,182 +790,226 @@ to{transform:rotate(360deg)}
 <span class="footer-txt">Sistema de Ponto Digital</span>
 <span class="footer-txt" id="footerBase"></span>
 </div>
+
 </div>
 </div>
 
 <script>
+/* ============================================================
+   CONFIGURAÇÃO DE BASES / PLANILHAS
+   ============================================================
+
+   Como usar no link do site:
+
+   seusite.com.br/?base=grupo
+   seusite.com.br/?base=pabovi
+   seusite.com.br/?base=lideranca12
+
+   O HTML envia o nome da base para o Apps Script.
+   O Apps Script é quem decide em qual planilha gravar.
+
+*/
+
 const BASES = {
-  grupo: { nome: "Grupo Elis Formaio" },
-  pabovi: { nome: "Pabovi S/A" },
-  lideranca12: { nome: "Lideranca 12" }
+  grupo: {
+    nome: "Grupo Elis Formaio"
+  },
+
+  pabovi: {
+    nome: "Pabovi S/A"
+  },
+
+  lideranca12: {
+    nome: "Liderança 12"
+  }
 };
-
-const COLABORADORES = ["WINICIUS", "MORGANA", "JUCIELI", "HENRIQUE", "FABIANE", "DANIELA"];
-
-const URL_API = "https://script.google.com/macros/s/AKfycbzxQ3JUPUPdL2QedmYeH3uWS5Y63SSUkiWom_Hn9uC-5sR3RMa85aeQf6NhfxPNGbknoA/exec";
-
-// Em GitHub Pages este token fica visivel no codigo-fonte.
-// Ele reduz envio acidental, mas nao deve ser tratado como segredo real.
-const API_TOKEN = "4a30076d-e128-45dd-8279-097c20851382
-";
-
-const DIAS = ["domingo","segunda-feira","terca-feira","quarta-feira","quinta-feira","sexta-feira","sabado"];
-const MES = ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
-
-let nome = "";
-let tipo = "";
 
 function getBaseAtual() {
   const params = new URLSearchParams(window.location.search);
   const base = params.get("base") || "grupo";
-  return BASES[base] ? base : "grupo";
+
+  if (BASES[base]) {
+    return base;
+  }
+
+  return "grupo";
 }
 
 const BASE_ATUAL = getBaseAtual();
 const BASE_NOME = BASES[BASE_ATUAL].nome;
 
-document.addEventListener("DOMContentLoaded", function() {
-  document.getElementById("baseAtualTexto").textContent = "Base: " + BASE_NOME;
-  document.getElementById("footerBase").textContent = BASE_NOME;
-  montarColaboradores();
-  tick();
-  setInterval(tick, 5000);
-});
+/* ============================================================
+   URL DO APPS SCRIPT
+   ============================================================
 
-function montarColaboradores() {
-  const grid = document.getElementById("nomes");
-  grid.innerHTML = "";
+   Mantenha UMA URL só.
+   O Apps Script receberá o campo "base" e enviará para a planilha correta.
 
-  COLABORADORES.forEach(colaborador => {
-    const btn = document.createElement("button");
-    btn.className = "nome-btn";
-    if (colaborador === "FABIANE" || colaborador === "DANIELA") btn.classList.add("nome-btn-full");
-    btn.type = "button";
-    btn.onclick = function() { selNome(colaborador, btn); };
-    btn.innerHTML =
-      '<div class="avatar">' + colaborador[0] + '</div>' +
-      '<span class="nbname">' + colaborador + '</span>' +
-      '<div class="chk-nome">✓</div>';
-    grid.appendChild(btn);
-  });
-}
+*/
+
+const URL_API = "https://script.google.com/macros/s/AKfycbxE-1OlMFA_dsEY6FiletiDDaKWwrdad03TTeGI1wXCtPKGiRbNH6TX0nEFjRX63WJi/exec";
+
+/* ============================================================
+   RELÓGIO
+   ============================================================ */
+
+const DIAS = [
+  'domingo',
+  'segunda-feira',
+  'terça-feira',
+  'quarta-feira',
+  'quinta-feira',
+  'sexta-feira',
+  'sábado'
+];
+
+const MES = [
+  'jan',
+  'fev',
+  'mar',
+  'abr',
+  'mai',
+  'jun',
+  'jul',
+  'ago',
+  'set',
+  'out',
+  'nov',
+  'dez'
+];
 
 function tick() {
   const n = new Date();
 
-  document.getElementById("clk").textContent =
-    String(n.getHours()).padStart(2, "0") + ":" +
-    String(n.getMinutes()).padStart(2, "0");
+  document.getElementById('clk').textContent =
+    String(n.getHours()).padStart(2, '0') + ':' +
+    String(n.getMinutes()).padStart(2, '0');
 
-  document.getElementById("dl").textContent =
-    DIAS[n.getDay()] + ", " +
-    n.getDate() + " de " +
-    MES[n.getMonth()] + " de " +
+  document.getElementById('dl').textContent =
+    DIAS[n.getDay()] + ', ' +
+    n.getDate() + ' de ' +
+    MES[n.getMonth()] + ' de ' +
     n.getFullYear();
 }
 
+tick();
+setInterval(tick, 5000);
+
+/* ============================================================
+   ESTADO DO FORMULÁRIO
+   ============================================================ */
+
+let nome = '';
+let tipo = '';
+
+document.addEventListener("DOMContentLoaded", function() {
+  document.getElementById("baseAtualTexto").textContent = "Base: " + BASE_NOME;
+  document.getElementById("footerBase").textContent = BASE_NOME;
+});
+
 function setProgress(step) {
   [1, 2, 3].forEach(i => {
-    document.getElementById("ps" + i).className =
-      "prog-seg" + (i < step ? " done" : i === step ? " active" : "");
+    document.getElementById('ps' + i).className =
+      'prog-seg' + (i < step ? ' done' : i === step ? ' active' : '');
 
-    document.getElementById("pl" + i).className =
-      "prog-label" + (i === step ? " active" : "");
+    document.getElementById('pl' + i).className =
+      'prog-label' + (i === step ? ' active' : '');
   });
 
-  document.getElementById("step-info").textContent = "Passo " + step + " de 3";
+  document.getElementById('step-info').textContent = 'Passo ' + step + ' de 3';
 }
 
 function show(id) {
-  ["s1", "s2", "s3", "s4"].forEach(s => {
-    document.getElementById(s).style.display = s === id ? "block" : "none";
+  ['s1', 's2', 's3', 's4'].forEach(s => {
+    document.getElementById(s).style.display = s === id ? 'block' : 'none';
   });
 
-  if (id === "s4") {
-    document.querySelector(".prog-wrap").style.display = "none";
-    document.querySelector(".card-top").style.display = "none";
+  if (id === 's4') {
+    document.querySelector('.prog-wrap').style.display = 'none';
+    document.querySelector('.card-top').style.display = 'none';
   } else {
-    document.querySelector(".prog-wrap").style.display = "block";
-    document.querySelector(".card-top").style.display = "flex";
-    setProgress({ s1: 1, s2: 2, s3: 3 }[id]);
+    document.querySelector('.prog-wrap').style.display = 'block';
+    document.querySelector('.card-top').style.display = 'flex';
+
+    setProgress({
+      s1: 1,
+      s2: 2,
+      s3: 3
+    }[id]);
   }
 }
 
 function selNome(n, elemento) {
   nome = n;
 
-  document.querySelectorAll(".nome-btn").forEach(b => b.classList.remove("sel"));
-  elemento.classList.add("sel");
+  document.querySelectorAll('.nome-btn').forEach(b => {
+    b.classList.remove('sel');
+  });
 
-  document.getElementById("e1").classList.remove("show");
-  document.getElementById("top-nome").textContent = n;
+  elemento.classList.add('sel');
+
+  document.getElementById('e1').classList.remove('show');
+  document.getElementById('top-nome').textContent = n;
 }
 
 function ir2() {
   if (!nome) {
-    document.getElementById("e1").classList.add("show");
+    document.getElementById('e1').classList.add('show');
     return;
   }
 
-  show("s2");
+  show('s2');
 }
 
-function selTipo(t) {
+function sel(t) {
   tipo = t;
 
-  document.querySelectorAll(".tb").forEach(b => b.classList.remove("sel"));
+  document.getElementById('be').classList.toggle('sel', t === 'Entrada');
+  document.getElementById('bs').classList.toggle('sel', t === 'Saída');
 
-  const ids = {
-    "Entrada": "tipo-entrada",
-    "Ida almoço": "tipo-ida-almoco",
-    "Volta almoço": "tipo-volta-almoco",
-    "Saída": "tipo-saida"
-  };
-
-  document.getElementById(ids[t]).classList.add("sel");
-  document.getElementById("e2").classList.remove("show");
+  document.getElementById('e2').classList.remove('show');
 }
 
 function ir3() {
   if (!tipo) {
-    document.getElementById("e2").classList.add("show");
+    document.getElementById('e2').classList.add('show');
     return;
   }
 
-  show("s3");
+  show('s3');
 }
 
-function agoraFormatado() {
-  const n = new Date();
-  const pad = x => String(x).padStart(2, "0");
-
-  return {
-    hora: pad(n.getHours()) + ":" + pad(n.getMinutes()) + ":" + pad(n.getSeconds()),
-    data: pad(n.getDate()) + "/" + pad(n.getMonth() + 1) + "/" + n.getFullYear()
-  };
-}
+/* ============================================================
+   ENVIO PARA APPS SCRIPT
+   ============================================================ */
 
 function enviar(pular) {
-  const obs = pular ? "" : document.getElementById("obs").value.trim();
-  const momento = agoraFormatado();
+  const obs = pular ? '' : document.getElementById('obs').value.trim();
 
-  if (!API_TOKEN || API_TOKEN === "COLE_SEU_TOKEN_AQUI") {
-    alert("Configure o API_TOKEN no arquivo HTML antes de publicar.");
-    return;
-  }
+  const n = new Date();
+  const pad = x => String(x).padStart(2, '0');
 
-  document.getElementById("ov").classList.add("show");
-  document.getElementById("btnReg").disabled = true;
+  const hora =
+    pad(n.getHours()) + ':' +
+    pad(n.getMinutes()) + ':' +
+    pad(n.getSeconds());
+
+  const data =
+    pad(n.getDate()) + '/' +
+    pad(n.getMonth() + 1) + '/' +
+    n.getFullYear();
+
+  document.getElementById('ov').classList.add('show');
+  document.getElementById('btnReg').disabled = true;
 
   const payload = {
-    token: API_TOKEN,
     base: BASE_ATUAL,
     baseNome: BASE_NOME,
     nome: nome,
     tipo: tipo,
     obs: obs,
-    hora: momento.hora,
-    data: momento.data
+    hora: hora,
+    data: data
   };
 
   fetch(URL_API, {
@@ -904,42 +1018,48 @@ function enviar(pular) {
     body: JSON.stringify(payload)
   })
   .then(() => {
-    mostrarSucesso(obs, momento);
+    document.getElementById('ov').classList.remove('show');
+
+    document.getElementById('rbase').textContent = BASE_NOME;
+    document.getElementById('rn').textContent = nome;
+
+    document.getElementById('rti').innerHTML =
+      '<span class="pill ' +
+      (tipo === 'Entrada' ? 'e' : 's') +
+      '">' +
+      tipo +
+      '</span>';
+
+    document.getElementById('rh').textContent = hora;
+    document.getElementById('rd').textContent = data;
+
+    if (obs) {
+      document.getElementById('rob').textContent = obs;
+      document.getElementById('ro').style.display = 'flex';
+    }
+
+    document.getElementById('sr').className =
+      'sr' + (tipo === 'Saída' ? ' saida' : '');
+
+    document.getElementById('rt').textContent =
+      tipo === 'Entrada'
+        ? 'Bom dia, ' + nome + '! 👋'
+        : 'Até logo, ' + nome + '! 👋';
+
+    show('s4');
   })
   .catch(err => {
-    document.getElementById("ov").classList.remove("show");
-    document.getElementById("btnReg").disabled = false;
-    alert("Erro ao registrar: " + err);
+    document.getElementById('ov').classList.remove('show');
+    document.getElementById('btnReg').disabled = false;
+
+    alert('Erro ao registrar: ' + err);
   });
-}
-
-function mostrarSucesso(obs, momento) {
-  document.getElementById("ov").classList.remove("show");
-  document.getElementById("rbase").textContent = BASE_NOME;
-  document.getElementById("rn").textContent = nome;
-  document.getElementById("rti").innerHTML = '<span class="pill">' + tipo + '</span>';
-  document.getElementById("rh").textContent = momento.hora;
-  document.getElementById("rd").textContent = momento.data;
-
-  if (obs) {
-    document.getElementById("rob").textContent = obs;
-    document.getElementById("ro").style.display = "flex";
-  }
-
-  document.getElementById("rt").textContent = mensagemSucesso();
-  show("s4");
-}
-
-function mensagemSucesso() {
-  if (tipo === "Entrada") return "Bom trabalho, " + nome + "!";
-  if (tipo === "Ida almoço") return "Bom almoco, " + nome + "!";
-  if (tipo === "Volta almoço") return "Bom retorno, " + nome + "!";
-  return "Ate logo, " + nome + "!";
 }
 
 function novo() {
   location.reload();
 }
 </script>
+
 </body>
 </html>
